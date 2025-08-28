@@ -43,15 +43,62 @@
 - Node.js 18.0.0 或更高版本
 - npm 或 yarn 包管理器
 
-### 安装
+### 本地安装
 
 1. **克隆项目**
 ```bash
 git clone https://github.com/renjismzy/Document-conversion.git
+```
+
+### 魔搭平台部署
+
+本项目已配置支持魔搭平台部署，包含以下配置文件：
+
+- `app.py` - Python入口文件
+- `requirements.txt` - Python依赖（本项目主要使用Node.js）
+- `modelscope.yaml` - 魔搭平台配置文件
+- `Dockerfile` - 容器化部署配置
+
+#### 部署步骤
+
+1. **上传项目到魔搭平台**
+   - 将整个项目文件夹上传到魔搭平台
+   - 确保包含所有配置文件
+
+2. **配置部署参数**
+   - 运行时：Node.js 18.0.0+
+   - 入口文件：`app.py`
+   - 端口：8000
+
+3. **环境变量设置**
+   ```
+   NODE_ENV=production
+   MCP_SERVER_NAME=document-conversion
+   ```
+
+4. **资源配置**
+   - CPU: 1核
+   - 内存: 2GB
+   - 存储: 根据需要调整
+
+#### 部署验证
+
+部署成功后，MCP服务器将在stdio传输模式下运行，支持以下工具：
+- `convert_document` - 文档格式转换
+- `get_document_info` - 获取文档信息
+- `list_supported_formats` - 列出支持格式
+- `batch_convert` - 批量转换
+- `validate_file` - 文件验证
+- `scan_directory` - 目录扫描
+- `preview_conversion` - 转换预览
+- `check_tool_status` - 状态检查
+
+2. **进入项目目录**
+```bash
 cd Document-conversion
 ```
 
-2. **自动安装**
+3. **自动安装**
 ```bash
 node install.js
 ```

@@ -1,0 +1,6 @@
+# Python dependencies for ModelScope deployment
+# 魔搭平台部署所需的Python依赖
+
+# No Python dependencies required
+# This project runs on Node.js
+# All dependencies are managed via package.json

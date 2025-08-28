@@ -1,0 +1,84 @@
+# ModelScope deployment configuration
+# 魔搭平台部署配置文件
+
+name: document-conversion-mcp
+version: "1.0.0"
+description: "MCP Document Conversion Server - 文档格式转换MCP服务器"
+
+# Runtime configuration
+runtime:
+  python_version: "3.8"
+  node_version: "18.0.0"
+  
+# Application entry point
+app:
+  entry: "app.py"
+  port: 8000
+  
+# Environment variables
+env:
+  NODE_ENV: "production"
+  MCP_SERVER_NAME: "document-conversion"
+  
+# Resource requirements
+resources:
+  cpu: "1"
+  memory: "2Gi"
+  
+# Health check
+health_check:
+  path: "/health"
+  interval: 30
+  timeout: 10
+  
+# Dependencies
+dependencies:
+  system:
+    - "nodejs"
+    - "npm"
+  python: "requirements.txt"
+  node: "package.json"
+  
+# Build configuration
+build:
+  commands:
+    - "npm install"
+    - "node install.js"
+    
+# Service configuration
+service:
+  type: "mcp-server"
+  protocol: "stdio"
+  
+# Supported tools
+tools:
+  - "convert_document"
+  - "get_document_info"
+  - "list_supported_formats"
+  - "batch_convert"
+  - "validate_file"
+  - "scan_directory"
+  - "preview_conversion"
+  - "check_tool_status"
+  
+# Supported formats
+formats:
+  input:
+    - "pdf"
+    - "docx"
+    - "xlsx"
+    - "pptx"
+    - "md"
+    - "html"
+    - "txt"
+    - "csv"
+  output:
+    - "pdf"
+    - "docx"
+    - "xlsx"
+    - "pptx"
+    - "html"
+    - "md"
+    - "txt"
+    - "png"
+    - "jpg"

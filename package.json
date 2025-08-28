@@ -15,7 +15,8 @@
     "tools": "node mcp-tools.js",
     "tools-dev": "node --watch mcp-tools.js",
     "test-tools": "node test-unified-tools.js",
-    "launch": "node launch.js"
+    "launch": "node launch.js",
+    "deploy-check": "node deploy-check.js"
   },
   "keywords": [
     "mcp",
