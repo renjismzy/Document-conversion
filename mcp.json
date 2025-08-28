@@ -11,6 +11,7 @@
   },
   "license": "MIT",
   "main": "src/index.js",
+  "unified_tools": "mcp-tools.js",
   "capabilities": {
     "tools": {
       "convert_document": {
@@ -40,6 +41,30 @@
           "target_format": "目标格式",
           "file_pattern": "文件匹配模式（可选）"
         }
+      },
+      "validate_file": {
+        "description": "验证文件是否存在且可读取",
+        "parameters": {
+          "file_path": "要验证的文件路径"
+        }
+      },
+      "scan_directory": {
+        "description": "扫描目录中的文档文件",
+        "parameters": {
+          "directory_path": "要扫描的目录路径",
+          "file_extensions": "要扫描的文件扩展名（可选）"
+        }
+      },
+      "preview_conversion": {
+        "description": "预览转换操作而不实际执行",
+        "parameters": {
+          "input_path": "输入文档的文件路径",
+          "target_format": "目标格式"
+        }
+      },
+      "check_tool_status": {
+        "description": "检查MCP工具服务器状态和可用性",
+        "parameters": {}
       }
     }
   },

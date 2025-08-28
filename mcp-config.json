@@ -1,0 +1,203 @@
+{
+  "mcpServers": {
+    "document-conversion": {
+      "command": "node",
+      "args": ["src/index.js"],
+      "cwd": "e:\\Document-conversion",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "document-conversion-unified": {
+      "command": "node",
+      "args": ["mcp-tools.js"],
+      "cwd": "e:\\Document-conversion",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  },
+  "tools": {
+    "convert_document": {
+      "server": "document-conversion",
+      "description": "将文档从一种格式转换为另一种格式",
+      "parameters": {
+        "input_path": {
+          "type": "string",
+          "description": "输入文档的文件路径",
+          "required": true
+        },
+        "output_path": {
+          "type": "string",
+          "description": "输出文档的文件路径",
+          "required": true
+        },
+        "target_format": {
+          "type": "string",
+          "description": "目标格式 (pdf, docx, xlsx, pptx, md, html, txt, png, jpg)",
+          "required": true,
+          "enum": ["pdf", "docx", "xlsx", "pptx", "md", "html", "txt", "png", "jpg"]
+        },
+        "options": {
+          "type": "object",
+          "description": "转换选项（可选）",
+          "required": false
+        }
+      }
+    },
+    "get_document_info": {
+      "server": "document-conversion",
+      "description": "获取文档的基本信息",
+      "parameters": {
+        "file_path": {
+          "type": "string",
+          "description": "文档文件路径",
+          "required": true
+        }
+      }
+    },
+    "list_supported_formats": {
+      "server": "document-conversion",
+      "description": "列出所有支持的文档格式",
+      "parameters": {}
+    },
+    "batch_convert": {
+      "server": "document-conversion",
+      "description": "批量转换多个文档",
+      "parameters": {
+        "input_directory": {
+          "type": "string",
+          "description": "输入目录路径",
+          "required": true
+        },
+        "output_directory": {
+          "type": "string",
+          "description": "输出目录路径",
+          "required": true
+        },
+        "target_format": {
+          "type": "string",
+          "description": "目标格式",
+          "required": true
+        },
+        "file_pattern": {
+          "type": "string",
+          "description": "文件匹配模式（可选）",
+          "required": false
+        }
+      }
+    },
+    "validate_file": {
+      "server": "document-conversion-unified",
+      "description": "验证文件是否存在且可读取",
+      "parameters": {
+        "file_path": {
+          "type": "string",
+          "description": "要验证的文件路径",
+          "required": true
+        }
+      }
+    },
+    "scan_directory": {
+      "server": "document-conversion-unified",
+      "description": "扫描目录中的文档文件",
+      "parameters": {
+        "directory_path": {
+          "type": "string",
+          "description": "要扫描的目录路径",
+          "required": true
+        },
+        "file_extensions": {
+          "type": "array",
+          "description": "要扫描的文件扩展名（可选）",
+          "required": false
+        }
+      }
+    },
+    "preview_conversion": {
+      "server": "document-conversion-unified",
+      "description": "预览转换操作而不实际执行",
+      "parameters": {
+        "input_path": {
+          "type": "string",
+          "description": "输入文档的文件路径",
+          "required": true
+        },
+        "target_format": {
+          "type": "string",
+          "description": "目标格式",
+          "required": true
+        }
+      }
+    },
+    "check_tool_status": {
+      "server": "document-conversion-unified",
+      "description": "检查MCP工具服务器状态和可用性",
+      "parameters": {}
+    }
+  },
+  "supportedFormats": {
+    "input": [
+      "pdf", "docx", "doc", "xlsx", "xls", "pptx", "ppt",
+      "md", "markdown", "html", "htm", "txt", "csv", "json"
+    ],
+    "output": [
+      "pdf", "docx", "xlsx", "pptx", "html", "md", "txt",
+      "csv", "json", "png", "jpg"
+    ]
+  },
+  "configuration": {
+    "timeout": 30000,
+    "maxFileSize": "100MB",
+    "tempDirectory": "./temp",
+    "logLevel": "info",
+    "enableDebug": false
+  },
+  "installation": {
+    "requirements": {
+      "node": ">=18.0.0",
+      "npm": ">=8.0.0"
+    },
+    "setup": [
+      "git clone https://github.com/renjismzy/Document-conversion.git",
+      "cd Document-conversion",
+      "npm install",
+      "node install.js"
+    ],
+    "verification": [
+      "npm test",
+      "npm run test-tools"
+    ]
+  },
+  "usage": {
+    "examples": [
+      {
+        "name": "转换Word文档为PDF",
+        "tool": "convert_document",
+        "parameters": {
+          "input_path": "./documents/report.docx",
+          "output_path": "./output/report.pdf",
+          "target_format": "pdf"
+        }
+      },
+      {
+        "name": "批量转换Markdown为HTML",
+        "tool": "batch_convert",
+        "parameters": {
+          "input_directory": "./markdown-files",
+          "output_directory": "./html-output",
+          "target_format": "html",
+          "file_pattern": "*.md"
+        }
+      },
+      {
+        "name": "扫描目录中的文档",
+        "tool": "scan_directory",
+        "parameters": {
+          "directory_path": "./documents",
+          "file_extensions": ["pdf", "docx", "xlsx"]
+        }
+      }
+    ]
+  }
+}

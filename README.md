@@ -65,53 +65,95 @@ npm install
 ### 启动服务器
 
 ```bash
-# 使用启动脚本
+# 方式1：使用启动脚本
 node start.js
 
-# 或者直接启动
+# 方式2：直接启动
 npm start
 
-# 开发模式
+# 方式3：开发模式（自动重启）
 npm run dev
+
+# 方式4：使用服务器脚本
+npm run server
+
+# 方式5：启动统一工具服务器
+npm run tools
+
+# 方式6：统一工具开发模式
+npm run tools-dev
+
+# 方式7：使用交互式启动器
+npm run launch
 ```
 
-## 🛠️ 使用方法
+### 运行示例和测试
 
-### 1. 转换单个文档
+```bash
+# 运行基础示例
+npm run example
+
+# 运行统一工具示例
+npm run example-tools
+
+# 运行基础测试
+npm test
+
+# 运行统一工具测试
+npm run test-tools
+```
+
+### 使用交互式启动器
+
+```bash
+# 启动交互式启动器，可选择不同的服务器和功能
+npm run launch
+```
+
+交互式启动器提供以下选项：
+- 启动基础MCP服务器
+- 启动统一工具服务器
+- 运行各种示例和测试
+- 安装项目依赖
+
+## 使用示例
+
+### 基础工具
+
+#### convert_document - 文档转换
 
 ```javascript
+// 将Word文档转换为PDF
 {
   "tool": "convert_document",
-  "parameters": {
-    "input_path": "./documents/sample.pdf",
-    "output_path": "./output/sample.txt",
-    "target_format": "txt",
-    "options": {
-      "quality": 80,
-      "page_range": "1-5"
-    }
+  "arguments": {
+    "input_path": "./documents/report.docx",
+    "output_path": "./output/report.pdf",
+    "target_format": "pdf"
   }
 }
 ```
 
-### 2. 获取文档信息
+#### get_document_info - 获取文档信息
 
 ```javascript
+// 获取文档基本信息
 {
   "tool": "get_document_info",
-  "parameters": {
-    "file_path": "./documents/sample.pdf"
+  "arguments": {
+    "file_path": "./documents/report.docx"
   }
 }
 ```
 
-### 3. 批量转换
+#### batch_convert - 批量转换
 
 ```javascript
+// 批量转换目录中的所有Word文档为PDF
 {
   "tool": "batch_convert",
-  "parameters": {
-    "input_directory": "./input",
+  "arguments": {
+    "input_directory": "./documents",
     "output_directory": "./output",
     "target_format": "pdf",
     "file_pattern": "*.docx"
@@ -119,12 +161,63 @@ npm run dev
 }
 ```
 
-### 4. 查看支持的格式
+#### list_supported_formats - 列出支持格式
 
 ```javascript
+// 获取所有支持的格式
 {
   "tool": "list_supported_formats",
-  "parameters": {}
+  "arguments": {}
+}
+```
+
+### 扩展工具
+
+#### validate_file - 文件验证
+
+```javascript
+// 验证文件是否存在且可读取
+{
+  "tool": "validate_file",
+  "arguments": {
+    "file_path": "./documents/report.docx"
+  }
+}
+```
+
+#### scan_directory - 目录扫描
+
+```javascript
+// 扫描目录中的文档文件
+{
+  "tool": "scan_directory",
+  "arguments": {
+    "directory_path": "./documents",
+    "file_extensions": ["docx", "pdf", "txt"]
+  }
+}
+```
+
+#### preview_conversion - 转换预览
+
+```javascript
+// 预览转换操作而不实际执行
+{
+  "tool": "preview_conversion",
+  "arguments": {
+    "input_path": "./documents/report.docx",
+    "target_format": "pdf"
+  }
+}
+```
+
+#### check_tool_status - 工具状态检查
+
+```javascript
+// 检查MCP工具服务器状态
+{
+  "tool": "check_tool_status",
+  "arguments": {}
 }
 ```
 
@@ -180,17 +273,23 @@ npm run dev
 ```
 Document-conversion/
 ├── src/
-│   ├── index.js          # MCP服务器主入口
-│   ├── converter.js      # 文档转换核心模块
-│   └── utils.js          # 工具函数
-├── examples/             # 示例文件目录
-│   ├── input/           # 输入示例
-│   └── output/          # 输出示例
-├── package.json         # 项目配置
-├── mcp.json            # MCP服务器配置
-├── start.js            # 启动脚本
-├── install.js          # 安装脚本
-└── README.md           # 项目文档
+│   ├── index.js                    # MCP服务器主入口
+│   ├── converter.js                # 文档转换核心模块
+│   └── utils.js                    # 工具函数
+├── examples/                       # 示例文件目录
+│   ├── input/                     # 输入示例
+│   ├── output/                    # 输出示例
+│   ├── example-usage.js           # 基础使用示例
+│   └── unified-tools-example.js   # 统一工具示例
+├── mcp-tools.js                   # 统一工具服务器
+├── package.json                   # 项目配置
+├── mcp.json                       # MCP服务器配置
+├── start.js                       # 启动脚本
+├── install.js                     # 安装脚本
+├── test.js                        # 基础测试脚本
+├── test-unified-tools.js          # 统一工具测试脚本
+├── launch.js                      # 交互式启动器
+└── README.md                      # 项目文档
 ```
 
 ### 添加新的转换格式
@@ -198,6 +297,37 @@ Document-conversion/
 1. 在 `src/utils.js` 中添加格式定义
 2. 在 `src/converter.js` 中实现转换方法
 3. 更新 `mcp.json` 中的支持格式列表
+
+## 🛠️ 统一工具服务器
+
+统一工具服务器 (`mcp-tools.js`) 集成了所有文档转换工具，提供以下额外功能：
+
+### 扩展工具
+
+- **validate_file**: 验证文件是否存在且可读取
+- **scan_directory**: 扫描目录中的文档文件
+- **preview_conversion**: 预览转换操作而不实际执行
+- **check_tool_status**: 检查MCP工具服务器状态和可用性
+
+### 启动统一工具服务器
+
+```bash
+# 启动统一工具服务器
+npm run tools
+
+# 开发模式（自动重启）
+npm run tools-dev
+```
+
+### 运行统一工具示例
+
+```bash
+# 运行完整的统一工具示例
+npm run example-tools
+
+# 运行统一工具测试套件
+npm run test-tools
+```
 
 ## 🐛 故障排除
 

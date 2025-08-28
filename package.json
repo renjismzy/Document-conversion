@@ -9,8 +9,13 @@
     "dev": "node --watch src/index.js",
     "test": "node test.js",
     "example": "node examples/example-usage.js",
+    "example-tools": "node examples/unified-tools-example.js",
     "install-deps": "node install.js",
-    "server": "node start.js"
+    "server": "node start.js",
+    "tools": "node mcp-tools.js",
+    "tools-dev": "node --watch mcp-tools.js",
+    "test-tools": "node test-unified-tools.js",
+    "launch": "node launch.js"
   },
   "keywords": [
     "mcp",
