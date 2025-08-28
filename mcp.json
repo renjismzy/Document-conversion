@@ -4,7 +4,11 @@
   "version": "1.0.0",
   "description": "一个强大的文档格式转换MCP工具，支持PDF、Word、Excel、PowerPoint、Markdown、HTML等多种格式之间的相互转换",
   "author": "Document Conversion MCP Team",
-  "homepage": "https://github.com/your-username/document-conversion-mcp",
+  "homepage": "https://github.com/renjismzy/Document-conversion",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/renjismzy/Document-conversion.git"
+  },
   "license": "MIT",
   "main": "src/index.js",
   "capabilities": {

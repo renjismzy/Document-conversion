@@ -47,7 +47,7 @@
 
 1. **克隆项目**
 ```bash
-git clone <repository-url>
+git clone https://github.com/renjismzy/Document-conversion.git
 cd Document-conversion
 ```
 
@@ -244,9 +244,9 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 
 如果您遇到问题或有建议，请：
 
-- 提交 [Issue](https://github.com/your-username/document-conversion-mcp/issues)
+- 提交 [Issue](https://github.com/renjismzy/Document-conversion/issues)
 - 发送邮件至：support@example.com
-- 查看 [Wiki](https://github.com/your-username/document-conversion-mcp/wiki) 获取更多信息
+- 查看 [Wiki](https://github.com/renjismzy/Document-conversion/wiki) 获取更多信息
 
 ---
 
