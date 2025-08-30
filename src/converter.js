@@ -13,9 +13,19 @@ import mime from 'mime-types';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+let browserInstance = null;
+
+async function getBrowser() {
+  if (!browserInstance) {
+    browserInstance = await puppeteer.launch({ headless: 'new' });
+  }
+  return browserInstance;
+}
+
 export class DocumentConverter {
   constructor() {
     this.turndownService = new TurndownService();
+    this.infoCache = new Map();
   }
 
   async convert(inputPath, outputPath, targetFormat, options = {}) {
@@ -345,7 +355,7 @@ export class DocumentConverter {
 
   // HTML 转换方法
   async htmlToPdf(inputPath, outputPath, options = {}) {
-    const browser = await puppeteer.launch({ headless: 'new' });
+    const browser = await getBrowser();
     const page = await browser.newPage();
     
     const html = await fs.readFile(inputPath, 'utf8');
@@ -358,7 +368,7 @@ export class DocumentConverter {
       ...options
     });
     
-    await browser.close();
+    await page.close();
     return { message: '成功转换HTML为PDF' };
   }
 
@@ -370,7 +380,7 @@ export class DocumentConverter {
   }
 
   async htmlToImage(inputPath, outputPath, format, options = {}) {
-    const browser = await puppeteer.launch({ headless: 'new' });
+    const browser = await getBrowser();
     const page = await browser.newPage();
     
     const html = await fs.readFile(inputPath, 'utf8');
@@ -383,7 +393,7 @@ export class DocumentConverter {
     });
     
     await fs.writeFile(outputPath, screenshot);
-    await browser.close();
+    await page.close();
     return { message: `成功转换HTML为${format.toUpperCase()}` };
   }
 
@@ -427,6 +437,9 @@ export class DocumentConverter {
 
   // 获取文档信息
   async getDocumentInfo(filePath) {
+    if (this.infoCache.has(filePath)) {
+      return this.infoCache.get(filePath);
+    }
     const stats = await fs.stat(filePath);
     const ext = path.extname(filePath).toLowerCase();
     const mimeType = mime.lookup(filePath) || 'unknown';
@@ -468,7 +481,7 @@ export class DocumentConverter {
     } catch (error) {
       info.error = `无法获取详细信息: ${error.message}`;
     }
-
+    this.infoCache.set(filePath, info);
     return info;
   }
 
