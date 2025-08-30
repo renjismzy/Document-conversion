@@ -27,24 +27,29 @@ export class DocumentConverter {
     this.turndownService = new TurndownService();
     this.infoCache = new Map();
     this.convertCache = new Map();
+    this.maxCacheSize = 100; // 最大缓存条目
   }
 
   async convert(inputPath, outputPath, targetFormat, options = {}) {
-    const cacheKey = `${inputPath}-${targetFormat}-${JSON.stringify(options)}`;
-    if (this.convertCache.has(cacheKey)) {
-      await fs.writeFile(outputPath, this.convertCache.get(cacheKey));
-      return { message: '从缓存中加载转换结果' };
-    }
-    const inputExt = path.extname(inputPath).toLowerCase();
-    const outputExt = `.${targetFormat.toLowerCase()}`;
+    try {
+      const cacheKey = `${inputPath}-${targetFormat}-${JSON.stringify(options)}`;
+      if (this.convertCache.has(cacheKey)) {
+        console.log(`缓存命中: ${cacheKey}`);
+        await fs.writeFile(outputPath, this.convertCache.get(cacheKey));
+        return { message: '从缓存中加载转换结果' };
+      }
+      const inputExt = path.extname(inputPath).toLowerCase();
+      const outputExt = `.${targetFormat.toLowerCase()}`;
 
-    // 确保输出目录存在
-    await fs.mkdir(path.dirname(outputPath), { recursive: true });
+      // 确保输出目录存在
+      await fs.mkdir(path.dirname(outputPath), { recursive: true });
 
-    // 根据输入和输出格式选择转换方法
-    const conversionKey = `${inputExt}_to_${outputExt}`;
-    let result;
-    switch (conversionKey) {
+      console.log(`开始转换: ${inputPath} -> ${outputPath} (${targetFormat})`);
+
+      // 根据输入和输出格式选择转换方法
+      const conversionKey = `${inputExt}_to_${outputExt}`;
+      let result;
+      switch (conversionKey) {
       // PDF 转换
       case '.pdf_to_.txt':
         return await this.pdfToText(inputPath, outputPath);
@@ -102,9 +107,19 @@ export class DocumentConverter {
       default:
         throw new Error(`不支持的转换: ${inputExt} -> ${outputExt}`);
     }
-    const content = await fs.readFile(outputPath);
-    this.convertCache.set(cacheKey, content);
+      const content = await fs.readFile(outputPath);
+      this.convertCache.set(cacheKey, content);
+    if (this.convertCache.size > this.maxCacheSize) {
+      const oldestKey = this.convertCache.keys().next().value;
+      this.convertCache.delete(oldestKey);
+      console.log(`内存优化: 删除旧缓存 ${oldestKey}`);
+    }
+    console.log(`转换完成: ${outputPath}`);
     return result;
+    } catch (error) {
+      console.error(`转换错误: ${inputPath} -> ${targetFormat} - ${error.message}`);
+      throw new Error(`转换失败: ${error.message}`);
+    }
   }
 
   // PDF 转换方法
@@ -491,51 +506,64 @@ export class DocumentConverter {
       info.error = `无法获取详细信息: ${error.message}`;
     }
     this.infoCache.set(filePath, info);
+    if (this.infoCache.size > this.maxCacheSize) {
+      const oldestKey = this.infoCache.keys().next().value;
+      this.infoCache.delete(oldestKey);
+      console.log(`内存优化: 删除旧信息缓存 ${oldestKey}`);
+    }
     return info;
   }
 
   // 批量转换
   async batchConvert(inputDir, outputDir, targetFormat, filePattern = '*') {
-    const files = await fs.readdir(inputDir);
-    const results = {
-      success: 0,
-      failed: 0,
-      details: []
-    };
+    try {
+      const files = await fs.readdir(inputDir);
+      const results = {
+        success: 0,
+        failed: 0,
+        details: []
+      };
 
-    // 确保输出目录存在
-    await fs.mkdir(outputDir, { recursive: true });
+      // 确保输出目录存在
+      await fs.mkdir(outputDir, { recursive: true });
+      console.log(`开始批量转换: ${inputDir} -> ${outputDir} (${targetFormat})`);
 
-    const conversionPromises = files.map(async (file) => {
-      const inputPath = path.join(inputDir, file);
-      const stats = await fs.stat(inputPath);
-      
-      if (stats.isFile()) {
-        try {
-          const baseName = path.parse(file).name;
-          const outputPath = path.join(outputDir, `${baseName}.${targetFormat}`);
-          
-          await this.convert(inputPath, outputPath, targetFormat);
-          return `✓ ${file} -> ${baseName}.${targetFormat}`;
-        } catch (error) {
-          return `✗ ${file}: ${error.message}`;
+      const conversionPromises = files.map(async (file) => {
+        const inputPath = path.join(inputDir, file);
+        const stats = await fs.stat(inputPath);
+        
+        if (stats.isFile()) {
+          try {
+            const baseName = path.parse(file).name;
+            const outputPath = path.join(outputDir, `${baseName}.${targetFormat}`);
+            
+            await this.convert(inputPath, outputPath, targetFormat);
+            return `✓ ${file} -> ${baseName}.${targetFormat}`;
+          } catch (error) {
+            console.error(`批量转换错误: ${file} - ${error.message}`);
+            return `✗ ${file}: ${error.message}`;
+          }
         }
-      }
-      return null;
-    });
+        return null;
+      });
 
-    const conversionResults = await Promise.all(conversionPromises);
-    conversionResults.forEach(result => {
-      if (result) {
-        if (result.startsWith('✓')) {
-          results.success++;
-        } else {
-          results.failed++;
+      const conversionResults = await Promise.all(conversionPromises);
+      conversionResults.forEach(result => {
+        if (result) {
+          if (result.startsWith('✓')) {
+            results.success++;
+          } else {
+            results.failed++;
+          }
+          results.details.push(result);
         }
-        results.details.push(result);
-      }
-    });
+      });
 
-    return results;
+      console.log(`批量转换完成: 成功 ${results.success}, 失败 ${results.failed}`);
+      return results;
+    } catch (error) {
+      console.error(`批量转换失败: ${error.message}`);
+      throw error;
+    }
   }
 }

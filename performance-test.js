@@ -51,11 +51,25 @@ class PerformanceTester {
     await this.measureConversionTime('html', 3); // 第一次无缓存，后续应命中缓存
   }
 
+  async testStressConversion(concurrency = 10) {
+    console.log(`\n压力测试: ${concurrency} 个并发转换`);
+    const promises = [];
+    const start = performance.now();
+    for (let i = 0; i < concurrency; i++) {
+      const outputFile = path.join(this.outputDir, `stress-${i}.html`);
+      promises.push(this.converter.convert(this.testFile, outputFile, 'html'));
+    }
+    await Promise.all(promises);
+    const end = performance.now();
+    console.log(`完成 ${concurrency} 个并发转换，用时: ${(end - start).toFixed(2)} ms`);
+  }
+
   async runAllPerfTests() {
     console.log('🚀 Document Conversion MCP 性能测试');
     await this.setup();
 
     await this.testCacheEfficiency();
+    await this.testStressConversion(20);
     // 添加更多性能测试...
 
     await this.cleanup();

@@ -307,6 +307,24 @@ console.log('转换完成:', result);
             console.log(`  - 输出大小: ${conversion.output_size} 字节`);
             console.log(`  - 转换时间: ${conversion.conversion_time}ms`);
             
+            // 重复转换以演示缓存
+            const outputFile2 = path.join(this.outputDir, 'converted-sample2.html');
+            const result2 = await this.server.handleRequest({
+                method: 'tools/call',
+                params: {
+                    name: 'convert_document',
+                    arguments: {
+                        input_path: inputFile,
+                        output_path: outputFile2,
+                        target_format: 'html'
+                    }
+                }
+            });
+            const conversion2 = JSON.parse(result2.content[0].text);
+            console.log('\n重复转换结果 (应使用缓存):');
+            console.log(`  - 成功: ${conversion2.success ? '是' : '否'}`);
+            console.log(`  - 转换时间: ${conversion2.conversion_time}ms`);
+            
             // 显示转换后文件的前几行
             if (fs.existsSync(outputFile)) {
                 const content = fs.readFileSync(outputFile, 'utf8');
