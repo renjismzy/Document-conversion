@@ -7,9 +7,9 @@
 - **多格式支持**: 支持PDF、Word、Excel、PowerPoint、Markdown、HTML、文本等多种格式
 - **批量转换**: 支持批量处理多个文档
 - **MCP协议**: 完全兼容Model Context Protocol标准
-- **易于使用**: 简单的API接口，易于集成
-- **高质量转换**: 保持文档格式和内容的完整性
-- **可配置选项**: 支持自定义转换参数
+- **云端托管**: 直接从GitHub仓库运行，无需本地安装
+- **自动更新**: 每次运行获取最新版本代码
+- **跨平台**: 支持任何有Node.js环境的系统
 
 ## 📋 支持的格式
 
@@ -41,18 +41,16 @@
 ### 系统要求
 
 - Node.js 18.0.0 或更高版本
-- npm 或 yarn 包管理器
+- npm 包管理器
+- 支持MCP协议的客户端
 
-### 本地安装
+### 托管部署配置（推荐）
 
-1. **克隆项目**
-```bash
-git clone https://github.com/renjismzy/Document-conversion.git
-```
+本项目支持直接从GitHub仓库进行托管部署，这是最简单和推荐的使用方式。
 
-### 云端部署配置
+#### MCP配置文件
 
-本项目支持直接从GitHub仓库进行云端部署，无需本地安装。使用以下MCP配置：
+在您的MCP客户端配置文件中添加以下配置：
 
 ```json
 {
@@ -62,8 +60,9 @@ git clone https://github.com/renjismzy/Document-conversion.git
       "args": [
         "--yes",
         "--package=https://github.com/renjismzy/Document-conversion.git",
+        "--",
         "node",
-        "mcp-tools.js"
+        "./mcp-tools.js"
       ],
       "env": {
         "NODE_ENV": "production"
@@ -73,162 +72,64 @@ git clone https://github.com/renjismzy/Document-conversion.git
 }
 ```
 
-#### 云端部署优势
-- **无需本地安装**：直接从GitHub仓库运行
-- **自动更新**：每次运行获取最新版本
-- **跨平台兼容**：支持任何有Node.js环境的系统
-- **简化部署**：一个配置文件即可部署
+#### 托管部署优势
 
-### 魔搭平台部署
+- ✅ **零安装**: 无需克隆仓库或安装依赖
+- ✅ **自动更新**: 每次启动自动获取最新版本
+- ✅ **简化维护**: 无需手动更新或管理本地文件
+- ✅ **跨平台**: 在任何支持Node.js的环境中运行
+- ✅ **一致性**: 确保所有用户使用相同版本
 
-本项目已配置支持魔搭平台部署，包含以下配置文件：
+#### 使用步骤
 
-- `app.py` - Python入口文件
-- `requirements.txt` - Python依赖（本项目主要使用Node.js）
-- `modelscope.yaml` - 魔搭平台配置文件
-- `Dockerfile` - 容器化部署配置
+1. **确保环境**: 安装Node.js 18.0.0+和npm
+2. **配置MCP**: 将上述配置添加到您的MCP客户端
+3. **启动服务**: MCP客户端会自动下载并启动服务
+4. **开始使用**: 立即可用统一的文档转换工具，支持8种操作
 
-#### 部署步骤
 
-1. **上传项目到魔搭平台**
-   - 将整个项目文件夹上传到魔搭平台
-   - 确保包含所有配置文件
 
-2. **配置部署参数**
-   - 运行时：Node.js 18.0.0+
-   - 入口文件：`app.py`
-   - 端口：8000
+## 🛠️ 统一转换工具
 
-3. **环境变量设置**
-   ```
-   NODE_ENV=production
-   MCP_SERVER_NAME=document-conversion
-   ```
+托管部署后，您将获得一个强大的统一文档转换工具 `document_converter`，支持8种不同的操作：
 
-4. **资源配置**
-   - CPU: 1核
-   - 内存: 2GB
-   - 存储: 根据需要调整
+### 使用方法
 
-#### 部署验证
+所有功能都通过 `document_converter` 工具实现，通过 `operation` 参数指定具体操作：
 
-部署成功后，MCP服务器将在stdio传输模式下运行，支持以下工具：
-- `convert_document` - 文档格式转换
-- `get_document_info` - 获取文档信息
-- `list_supported_formats` - 列出支持格式
-- `batch_convert` - 批量转换
-- `validate_file` - 文件验证
-- `scan_directory` - 目录扫描
-- `preview_conversion` - 转换预览
-- `check_tool_status` - 状态检查
-
-2. **进入项目目录**
-```bash
-cd Document-conversion
-```
-
-3. **自动安装**
-```bash
-node install.js
-```
-
-或者手动安装：
-
-```bash
-npm install
-```
-
-### 启动服务器
-
-```bash
-# 方式1：使用启动脚本
-node start.js
-
-# 方式2：直接启动
-npm start
-
-# 方式3：开发模式（自动重启）
-npm run dev
-
-# 方式4：使用服务器脚本
-npm run server
-
-# 方式5：启动统一工具服务器
-npm run tools
-
-# 方式6：统一工具开发模式
-npm run tools-dev
-
-# 方式7：使用交互式启动器
-npm run launch
-```
-
-### 运行示例和测试
-
-```bash
-# 运行基础示例
-npm run example
-
-# 运行统一工具示例
-npm run example-tools
-
-# 运行基础测试
-npm test
-
-# 运行统一工具测试
-npm run test-tools
-```
-
-### 使用交互式启动器
-
-```bash
-# 启动交互式启动器，可选择不同的服务器和功能
-npm run launch
-```
-
-交互式启动器提供以下选项：
-- 启动基础MCP服务器
-- 启动统一工具服务器
-- 运行各种示例和测试
-- 安装项目依赖
-
-## 使用示例
-
-### 基础工具
-
-#### convert_document - 文档转换
-
-```javascript
-// 将Word文档转换为PDF
+#### 1. 文档格式转换 (convert)
+```json
 {
-  "tool": "convert_document",
+  "tool": "document_converter",
   "arguments": {
+    "operation": "convert",
     "input_path": "./documents/report.docx",
     "output_path": "./output/report.pdf",
-    "target_format": "pdf"
+    "target_format": "pdf",
+    "options": {
+      "quality": 90
+    }
   }
 }
 ```
 
-#### get_document_info - 获取文档信息
-
-```javascript
-// 获取文档基本信息
+#### 2. 获取文档信息 (get_info)
+```json
 {
-  "tool": "get_document_info",
+  "tool": "document_converter",
   "arguments": {
+    "operation": "get_info",
     "file_path": "./documents/report.docx"
   }
 }
 ```
 
-#### batch_convert - 批量转换
-
-```javascript
-// 批量转换目录中的所有Word文档为PDF
+#### 3. 批量转换 (batch_convert)
+```json
 {
-  "tool": "batch_convert",
+  "tool": "document_converter",
   "arguments": {
+    "operation": "batch_convert",
     "input_directory": "./documents",
     "output_directory": "./output",
     "target_format": "pdf",
@@ -237,63 +138,58 @@ npm run launch
 }
 ```
 
-#### list_supported_formats - 列出支持格式
-
-```javascript
-// 获取所有支持的格式
+#### 4. 列出支持格式 (list_formats)
+```json
 {
-  "tool": "list_supported_formats",
-  "arguments": {}
+  "tool": "document_converter",
+  "arguments": {
+    "operation": "list_formats"
+  }
 }
 ```
 
-### 扩展工具
-
-#### validate_file - 文件验证
-
-```javascript
-// 验证文件是否存在且可读取
+#### 5. 文件验证 (validate_file)
+```json
 {
-  "tool": "validate_file",
+  "tool": "document_converter",
   "arguments": {
+    "operation": "validate_file",
     "file_path": "./documents/report.docx"
   }
 }
 ```
 
-#### scan_directory - 目录扫描
-
-```javascript
-// 扫描目录中的文档文件
+#### 6. 目录扫描 (scan_directory)
+```json
 {
-  "tool": "scan_directory",
+  "tool": "document_converter",
   "arguments": {
+    "operation": "scan_directory",
     "directory_path": "./documents",
     "file_extensions": ["docx", "pdf", "txt"]
   }
 }
 ```
 
-#### preview_conversion - 转换预览
-
-```javascript
-// 预览转换操作而不实际执行
+#### 7. 转换预览 (preview_conversion)
+```json
 {
-  "tool": "preview_conversion",
+  "tool": "document_converter",
   "arguments": {
+    "operation": "preview_conversion",
     "input_path": "./documents/report.docx",
     "target_format": "pdf"
   }
 }
 ```
 
-#### check_tool_status - 工具状态检查
-
-```javascript
-// 检查MCP工具服务器状态
+#### 8. 状态检查 (check_status)
+```json
 {
-  "tool": "check_tool_status",
-  "arguments": {}
+  "tool": "document_converter",
+  "arguments": {
+    "operation": "check_status"
+  }
 }
 ```
 
@@ -330,115 +226,57 @@ npm run launch
 - **extract_images**: 是否提取图片
 - **sheet**: Excel工作表名称
 
-### 示例配置
+### 环境变量
 
-```javascript
-{
-  "options": {
-    "quality": 90,
-    "page_range": "1-10",
-    "extract_images": true
-  }
-}
-```
-
-## 🔧 开发
-
-### 项目结构
-
-```
-Document-conversion/
-├── src/
-│   ├── index.js                    # MCP服务器主入口
-│   ├── converter.js                # 文档转换核心模块
-│   └── utils.js                    # 工具函数
-├── examples/                       # 示例文件目录
-│   ├── input/                     # 输入示例
-│   ├── output/                    # 输出示例
-│   ├── example-usage.js           # 基础使用示例
-│   └── unified-tools-example.js   # 统一工具示例
-├── mcp-tools.js                   # 统一工具服务器
-├── package.json                   # 项目配置
-├── mcp.json                       # MCP服务器配置
-├── start.js                       # 启动脚本
-├── install.js                     # 安装脚本
-├── test.js                        # 基础测试脚本
-├── test-unified-tools.js          # 统一工具测试脚本
-├── launch.js                      # 交互式启动器
-└── README.md                      # 项目文档
-```
-
-### 添加新的转换格式
-
-1. 在 `src/utils.js` 中添加格式定义
-2. 在 `src/converter.js` 中实现转换方法
-3. 更新 `mcp.json` 中的支持格式列表
-
-## 🛠️ 统一工具服务器
-
-统一工具服务器 (`mcp-tools.js`) 集成了所有文档转换工具，提供以下额外功能：
-
-### 扩展工具
-
-- **validate_file**: 验证文件是否存在且可读取
-- **scan_directory**: 扫描目录中的文档文件
-- **preview_conversion**: 预览转换操作而不实际执行
-- **check_tool_status**: 检查MCP工具服务器状态和可用性
-
-### 启动统一工具服务器
-
-```bash
-# 启动统一工具服务器
-npm run tools
-
-# 开发模式（自动重启）
-npm run tools-dev
-```
-
-### 运行统一工具示例
-
-```bash
-# 运行完整的统一工具示例
-npm run example-tools
-
-# 运行统一工具测试套件
-npm run test-tools
-```
+- **NODE_ENV**: 运行环境 (production/development)
+- **MCP_SERVER_NAME**: MCP服务器名称
 
 ## 🐛 故障排除
 
 ### 常见问题
 
-1. **Puppeteer安装失败**
-   ```bash
-   npm config set puppeteer_skip_chromium_download true
-   npm install
-   ```
+1. **npx下载失败**
+   - 检查网络连接
+   - 确保npm版本为最新
+   - 尝试清除npm缓存: `npm cache clean --force`
 
-2. **PDF转换失败**
+2. **Node.js版本不兼容**
+   - 确保使用Node.js 18.0.0或更高版本
+   - 使用nvm管理Node.js版本
+
+3. **权限问题**
+   - 在Windows上以管理员身份运行
+   - 在Linux/macOS上使用sudo（如需要）
+
+4. **PDF转换失败**
    - 确保PDF文件没有密码保护
    - 检查文件路径是否正确
 
-3. **内存不足**
-   - 处理大文件时增加Node.js内存限制
-   ```bash
-   node --max-old-space-size=4096 src/index.js
-   ```
+### 调试模式
 
-### 日志调试
-
-启用详细日志：
+如需调试，可以设置环境变量：
 ```bash
-DEBUG=* node src/index.js
+DEBUG=* npx --yes --package=https://github.com/renjismzy/Document-conversion.git -- node ./mcp-tools.js
 ```
 
-## 📄 许可证
+## 🔄 版本更新
 
-MIT License - 详见 [LICENSE](LICENSE) 文件
+使用托管部署的优势之一是自动更新。每次启动MCP服务器时，npx会自动检查并下载最新版本。
 
-## 🤝 贡献
+如果您想强制更新到最新版本：
+```bash
+npm cache clean --force
+```
 
-欢迎提交Issue和Pull Request！
+## 📞 支持与贡献
+
+### 获取帮助
+
+- 📋 [提交Issue](https://github.com/renjismzy/Document-conversion/issues)
+- 📖 [查看Wiki](https://github.com/renjismzy/Document-conversion/wiki)
+- 💬 [讨论区](https://github.com/renjismzy/Document-conversion/discussions)
+
+### 贡献代码
 
 1. Fork 项目
 2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
@@ -446,14 +284,12 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 4. 推送到分支 (`git push origin feature/AmazingFeature`)
 5. 打开Pull Request
 
-## 📞 支持
+## 📄 许可证
 
-如果您遇到问题或有建议，请：
-
-- 提交 [Issue](https://github.com/renjismzy/Document-conversion/issues)
-- 发送邮件至：support@example.com
-- 查看 [Wiki](https://github.com/renjismzy/Document-conversion/wiki) 获取更多信息
+MIT License - 详见 [LICENSE](LICENSE) 文件
 
 ---
 
 **Document Conversion MCP** - 让文档转换变得简单高效！ 🚀
+
+> 💡 **提示**: 推荐使用托管部署方式，享受零配置、自动更新的便利体验！

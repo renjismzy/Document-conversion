@@ -40,28 +40,72 @@ class UnifiedMCPToolsServer {
     this.server.setRequestHandler(ListToolsRequestSchema, async () => {
       return {
         tools: [
-          // 核心转换工具
           {
-            name: 'convert_document',
-            description: '将文档从一种格式转换为另一种格式',
+            name: 'document_converter',
+            description: '统一的文档转换工具，支持格式转换、信息获取、批量处理、文件验证等所有功能',
             inputSchema: {
               type: 'object',
               properties: {
+                operation: {
+                  type: 'string',
+                  description: '操作类型',
+                  enum: [
+                    'convert',
+                    'get_info', 
+                    'list_formats',
+                    'batch_convert',
+                    'validate_file',
+                    'scan_directory',
+                    'preview_conversion',
+                    'check_status'
+                  ],
+                },
+                // 文件路径参数
                 input_path: {
                   type: 'string',
-                  description: '输入文档的文件路径',
+                  description: '输入文档的文件路径（convert, get_info, validate_file, preview_conversion操作需要）',
                 },
                 output_path: {
                   type: 'string',
-                  description: '输出文档的文件路径',
+                  description: '输出文档的文件路径（convert操作需要）',
                 },
+                file_path: {
+                  type: 'string',
+                  description: '文档文件路径（get_info, validate_file操作的别名）',
+                },
+                // 目录参数
+                input_directory: {
+                  type: 'string',
+                  description: '输入目录路径（batch_convert操作需要）',
+                },
+                output_directory: {
+                  type: 'string',
+                  description: '输出目录路径（batch_convert操作需要）',
+                },
+                directory_path: {
+                  type: 'string',
+                  description: '要扫描的目录路径（scan_directory操作需要）',
+                },
+                // 格式参数
                 target_format: {
                   type: 'string',
                   description: '目标格式 (pdf, docx, xlsx, pptx, md, html, txt, png, jpg)',
                 },
+                // 其他参数
+                file_pattern: {
+                  type: 'string',
+                  description: '文件匹配模式（batch_convert操作可选）',
+                },
+                file_extensions: {
+                  type: 'array',
+                  description: '要扫描的文件扩展名（scan_directory操作可选）',
+                  items: {
+                    type: 'string',
+                  },
+                },
                 options: {
                   type: 'object',
-                  description: '转换选项（可选）',
+                  description: '转换选项（convert操作可选）',
                   properties: {
                     quality: {
                       type: 'number',
@@ -80,123 +124,7 @@ class UnifiedMCPToolsServer {
                   },
                 },
               },
-              required: ['input_path', 'output_path', 'target_format'],
-            },
-          },
-          // 文档信息工具
-          {
-            name: 'get_document_info',
-            description: '获取文档的基本信息',
-            inputSchema: {
-              type: 'object',
-              properties: {
-                file_path: {
-                  type: 'string',
-                  description: '文档文件路径',
-                },
-              },
-              required: ['file_path'],
-            },
-          },
-          // 格式支持工具
-          {
-            name: 'list_supported_formats',
-            description: '列出所有支持的文档格式',
-            inputSchema: {
-              type: 'object',
-              properties: {},
-            },
-          },
-          // 批量转换工具
-          {
-            name: 'batch_convert',
-            description: '批量转换多个文档',
-            inputSchema: {
-              type: 'object',
-              properties: {
-                input_directory: {
-                  type: 'string',
-                  description: '输入目录路径',
-                },
-                output_directory: {
-                  type: 'string',
-                  description: '输出目录路径',
-                },
-                target_format: {
-                  type: 'string',
-                  description: '目标格式',
-                },
-                file_pattern: {
-                  type: 'string',
-                  description: '文件匹配模式（可选）',
-                },
-              },
-              required: ['input_directory', 'output_directory', 'target_format'],
-            },
-          },
-          // 文件验证工具
-          {
-            name: 'validate_file',
-            description: '验证文件是否存在且可读取',
-            inputSchema: {
-              type: 'object',
-              properties: {
-                file_path: {
-                  type: 'string',
-                  description: '要验证的文件路径',
-                },
-              },
-              required: ['file_path'],
-            },
-          },
-          // 目录扫描工具
-          {
-            name: 'scan_directory',
-            description: '扫描目录中的文档文件',
-            inputSchema: {
-              type: 'object',
-              properties: {
-                directory_path: {
-                  type: 'string',
-                  description: '要扫描的目录路径',
-                },
-                file_extensions: {
-                  type: 'array',
-                  description: '要扫描的文件扩展名（可选）',
-                  items: {
-                    type: 'string',
-                  },
-                },
-              },
-              required: ['directory_path'],
-            },
-          },
-          // 转换预览工具
-          {
-            name: 'preview_conversion',
-            description: '预览转换操作而不实际执行',
-            inputSchema: {
-              type: 'object',
-              properties: {
-                input_path: {
-                  type: 'string',
-                  description: '输入文档的文件路径',
-                },
-                target_format: {
-                  type: 'string',
-                  description: '目标格式',
-                },
-              },
-              required: ['input_path', 'target_format'],
-            },
-          },
-          // 工具状态检查
-          {
-            name: 'check_tool_status',
-            description: '检查MCP工具服务器状态和可用性',
-            inputSchema: {
-              type: 'object',
-              properties: {},
+              required: ['operation'],
             },
           },
         ],
@@ -208,22 +136,8 @@ class UnifiedMCPToolsServer {
 
       try {
         switch (name) {
-          case 'convert_document':
-            return await this.handleConvertDocument(args);
-          case 'get_document_info':
-            return await this.handleGetDocumentInfo(args);
-          case 'list_supported_formats':
-            return await this.handleListSupportedFormats();
-          case 'batch_convert':
-            return await this.handleBatchConvert(args);
-          case 'validate_file':
-            return await this.handleValidateFile(args);
-          case 'scan_directory':
-            return await this.handleScanDirectory(args);
-          case 'preview_conversion':
-            return await this.handlePreviewConversion(args);
-          case 'check_tool_status':
-            return await this.handleCheckToolStatus();
+          case 'document_converter':
+            return await this.handleDocumentConverter(args);
           default:
             throw new McpError(
               ErrorCode.MethodNotFound,
@@ -237,6 +151,36 @@ class UnifiedMCPToolsServer {
         );
       }
     });
+  }
+
+  // 统一文档转换处理器
+  async handleDocumentConverter(args) {
+    const { operation } = args;
+
+    switch (operation) {
+      case 'convert':
+        return await this.handleConvertDocument(args);
+      case 'get_info':
+        // 支持input_path作为file_path的别名
+        const infoArgs = { ...args, file_path: args.file_path || args.input_path };
+        return await this.handleGetDocumentInfo(infoArgs);
+      case 'list_formats':
+        return await this.handleListSupportedFormats();
+      case 'batch_convert':
+        return await this.handleBatchConvert(args);
+      case 'validate_file':
+        // 支持input_path作为file_path的别名
+        const validateArgs = { ...args, file_path: args.file_path || args.input_path };
+        return await this.handleValidateFile(validateArgs);
+      case 'scan_directory':
+        return await this.handleScanDirectory(args);
+      case 'preview_conversion':
+        return await this.handlePreviewConversion(args);
+      case 'check_status':
+        return await this.handleCheckToolStatus();
+      default:
+        throw new Error(`不支持的操作类型: ${operation}`);
+    }
   }
 
   // 核心转换功能
@@ -421,7 +365,7 @@ class UnifiedMCPToolsServer {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
     console.error('🚀 Unified Document Conversion MCP Tools Server running on stdio');
-    console.error('📚 Available tools: convert_document, get_document_info, list_supported_formats, batch_convert, validate_file, scan_directory, preview_conversion, check_tool_status');
+    console.error('📚 Available tool: document_converter (支持8种操作: convert, get_info, list_formats, batch_convert, validate_file, scan_directory, preview_conversion, check_status)');
   }
 }
 
