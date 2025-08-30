@@ -6,6 +6,7 @@
         "--yes",
         "--package=https://github.com/renjismzy/Document-conversion.git",
         "--",
+        "node",
         "mcp-tools.js"
       ],
       "env": {
