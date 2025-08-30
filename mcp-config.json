@@ -6,12 +6,12 @@
         "--yes",
         "--package=https://github.com/renjismzy/Document-conversion.git",
         "--",
-        "node",
-        "./mcp-tools.js"
+        "mcp-tools.js"
       ],
       "env": {
         "NODE_ENV": "production"
-      }
+      },
+      "description": "统一文档转换工具 - 支持8种操作：convert, get_info, list_formats, batch_convert, validate_file, scan_directory, preview_conversion, check_status"
     }
   }
 }
