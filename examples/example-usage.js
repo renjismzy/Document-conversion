@@ -158,14 +158,22 @@ class ExampleUsage {
           continue;
         }
 
-        // 执行转换
-        const result = await this.converter.convert(
+        // 执行转换（第一次，可能无缓存）
+        const result1 = await this.converter.convert(
           example.input,
           example.output,
           example.format
         );
-        
-        console.log(`   ✅ ${example.name}: ${result.message}`);
+        console.log(`   ✅ ${example.name} (第一次): ${result1.message}`);
+
+        // 执行相同转换（应命中缓存）
+        const tempOutput = example.output.replace('.html', '_temp.html');
+        const result2 = await this.converter.convert(
+          example.input,
+          tempOutput,
+          example.format
+        );
+        console.log(`   ✅ ${example.name} (第二次，缓存): ${result2.message}`);
       } catch (error) {
         console.log(`   ❌ ${example.name}: ${error.message}`);
       }

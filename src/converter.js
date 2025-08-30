@@ -26,9 +26,15 @@ export class DocumentConverter {
   constructor() {
     this.turndownService = new TurndownService();
     this.infoCache = new Map();
+    this.convertCache = new Map();
   }
 
   async convert(inputPath, outputPath, targetFormat, options = {}) {
+    const cacheKey = `${inputPath}-${targetFormat}-${JSON.stringify(options)}`;
+    if (this.convertCache.has(cacheKey)) {
+      await fs.writeFile(outputPath, this.convertCache.get(cacheKey));
+      return { message: '从缓存中加载转换结果' };
+    }
     const inputExt = path.extname(inputPath).toLowerCase();
     const outputExt = `.${targetFormat.toLowerCase()}`;
 
@@ -37,7 +43,7 @@ export class DocumentConverter {
 
     // 根据输入和输出格式选择转换方法
     const conversionKey = `${inputExt}_to_${outputExt}`;
-    
+    let result;
     switch (conversionKey) {
       // PDF 转换
       case '.pdf_to_.txt':
@@ -96,6 +102,9 @@ export class DocumentConverter {
       default:
         throw new Error(`不支持的转换: ${inputExt} -> ${outputExt}`);
     }
+    const content = await fs.readFile(outputPath);
+    this.convertCache.set(cacheKey, content);
+    return result;
   }
 
   // PDF 转换方法
@@ -497,7 +506,7 @@ export class DocumentConverter {
     // 确保输出目录存在
     await fs.mkdir(outputDir, { recursive: true });
 
-    for (const file of files) {
+    const conversionPromises = files.map(async (file) => {
       const inputPath = path.join(inputDir, file);
       const stats = await fs.stat(inputPath);
       
@@ -507,14 +516,25 @@ export class DocumentConverter {
           const outputPath = path.join(outputDir, `${baseName}.${targetFormat}`);
           
           await this.convert(inputPath, outputPath, targetFormat);
-          results.success++;
-          results.details.push(`✓ ${file} -> ${baseName}.${targetFormat}`);
+          return `✓ ${file} -> ${baseName}.${targetFormat}`;
         } catch (error) {
-          results.failed++;
-          results.details.push(`✗ ${file}: ${error.message}`);
+          return `✗ ${file}: ${error.message}`;
         }
       }
-    }
+      return null;
+    });
+
+    const conversionResults = await Promise.all(conversionPromises);
+    conversionResults.forEach(result => {
+      if (result) {
+        if (result.startsWith('✓')) {
+          results.success++;
+        } else {
+          results.failed++;
+        }
+        results.details.push(result);
+      }
+    });
 
     return results;
   }
