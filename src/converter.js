@@ -259,8 +259,88 @@ export class DocumentConverter {
   }
 
   async markdownToDocx(inputPath, outputPath) {
-    // 通过HTML中转（需要额外的库支持）
-    throw new Error('Markdown转Word功能需要额外配置');
+    try {
+      // 读取Markdown文件
+      const markdown = await fs.readFile(inputPath, 'utf8');
+      
+      // 转换为HTML
+      const html = marked(markdown);
+      
+      // 创建临时HTML文件
+      const tempHtml = outputPath.replace(/\.docx$/, '.temp.html');
+      const fullHtml = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Markdown转换结果</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; }
+        h1, h2, h3, h4, h5, h6 { color: #333; margin-top: 1.5em; margin-bottom: 0.5em; }
+        p { margin-bottom: 1em; }
+        code { background-color: #f4f4f4; padding: 2px 4px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto; }
+        blockquote { border-left: 4px solid #ddd; margin: 0; padding-left: 1em; color: #666; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    ${html}
+</body>
+</html>`;
+      
+      await fs.writeFile(tempHtml, fullHtml, 'utf8');
+      
+      // 使用puppeteer生成PDF，然后转换为Word格式
+      // 由于直接转换为Word格式比较复杂，我们先生成一个富文本HTML
+      // 然后使用mammoth的反向功能或其他方法
+      
+      // 简化方案：创建一个包含样式的HTML文件，用户可以手动复制到Word中
+       // 或者我们可以生成RTF格式，Word可以直接打开
+       const rtfContent = this.htmlToRtf(html);
+       const rtfPath = outputPath.replace(/\.docx$/, '.rtf').replace(/\//g, path.sep);
+       console.log('生成RTF文件路径:', rtfPath);
+       await fs.writeFile(rtfPath, rtfContent, 'utf8');
+       console.log('RTF文件已生成');
+      
+      // 清理临时文件
+      await fs.unlink(tempHtml);
+      
+      return { 
+        message: `成功转换Markdown为RTF格式 (${rtfPath})，可以用Word打开并另存为DOCX格式`,
+        outputPath: rtfPath
+      };
+    } catch (error) {
+      throw new Error(`Markdown转Word转换失败: ${error.message}`);
+    }
+  }
+  
+  // 简单的HTML到RTF转换器
+  htmlToRtf(html) {
+    // RTF文档头
+    let rtf = '{\\rtf1\\ansi\\deff0 {\\fonttbl {\\f0 Times New Roman;}}\\f0\\fs24 ';
+    
+    // 简单的HTML标签转RTF
+    let content = html
+      .replace(/<h1[^>]*>(.*?)<\/h1>/gi, '\\fs32\\b $1\\b0\\fs24\\par ')
+      .replace(/<h2[^>]*>(.*?)<\/h2>/gi, '\\fs28\\b $1\\b0\\fs24\\par ')
+      .replace(/<h3[^>]*>(.*?)<\/h3>/gi, '\\fs26\\b $1\\b0\\fs24\\par ')
+      .replace(/<p[^>]*>(.*?)<\/p>/gi, '$1\\par ')
+      .replace(/<strong[^>]*>(.*?)<\/strong>/gi, '\\b $1\\b0 ')
+      .replace(/<b[^>]*>(.*?)<\/b>/gi, '\\b $1\\b0 ')
+      .replace(/<em[^>]*>(.*?)<\/em>/gi, '\\i $1\\i0 ')
+      .replace(/<i[^>]*>(.*?)<\/i>/gi, '\\i $1\\i0 ')
+      .replace(/<code[^>]*>(.*?)<\/code>/gi, '\\f1 $1\\f0 ')
+      .replace(/<br\s*\/?>/gi, '\\line ')
+      .replace(/<[^>]+>/g, '') // 移除其他HTML标签
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&');
+    
+    rtf += content + '}';
+    return rtf;
   }
 
   // HTML 转换方法
