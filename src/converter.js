@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import pdfParse from 'pdf-parse';
+// import pdfParse from 'pdf-parse'; // 延迟加载以避免测试文件执行
 import mammoth from 'mammoth';
 import XLSX from 'xlsx';
 import { marked } from 'marked';
@@ -90,6 +90,7 @@ export class DocumentConverter {
 
   // PDF 转换方法
   async pdfToText(inputPath, outputPath) {
+    const pdfParse = (await import('pdf-parse')).default;
     const dataBuffer = await fs.readFile(inputPath);
     const data = await pdfParse(dataBuffer);
     await fs.writeFile(outputPath, data.text, 'utf8');
@@ -97,6 +98,7 @@ export class DocumentConverter {
   }
 
   async pdfToMarkdown(inputPath, outputPath) {
+    const pdfParse = (await import('pdf-parse')).default;
     const dataBuffer = await fs.readFile(inputPath);
     const data = await pdfParse(dataBuffer);
     
@@ -119,6 +121,7 @@ export class DocumentConverter {
   }
 
   async pdfToHtml(inputPath, outputPath) {
+    const pdfParse = (await import('pdf-parse')).default;
     const dataBuffer = await fs.readFile(inputPath);
     const data = await pdfParse(dataBuffer);
     
@@ -362,6 +365,7 @@ export class DocumentConverter {
     try {
       switch (ext) {
         case '.pdf':
+          const pdfParse = (await import('pdf-parse')).default;
           const pdfBuffer = await fs.readFile(filePath);
           const pdfData = await pdfParse(pdfBuffer);
           info.pages = pdfData.numpages;
