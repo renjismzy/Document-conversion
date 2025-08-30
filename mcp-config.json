@@ -3,11 +3,15 @@
     "document-conversion": {
       "command": "npx",
       "args": [
-        "mcp-remote",
-        "https://github.com/renjismzy/Document-conversion.git",
-        "--transport",
-        "sse-only"
-      ]
+        "--yes",
+        "--package=https://github.com/renjismzy/Document-conversion.git",
+        "--",
+        "node",
+        "./mcp-tools.js"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      }
     }
   }
 }
