@@ -5,9 +5,7 @@
       "args": [
         "--yes",
         "--package=https://github.com/renjismzy/Document-conversion.git",
-        "--",
-        "node",
-        "./mcp-tools.js"
+        "document-conversion-mcp"
       ],
       "env": {
         "NODE_ENV": "production"
