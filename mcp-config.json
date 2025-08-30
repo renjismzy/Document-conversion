@@ -1,13 +1,13 @@
 {
   "mcpServers": {
     "document-conversion": {
+      "command": "npx",
       "args": [
         "mcp-remote",
         "https://github.com/renjismzy/Document-conversion.git",
         "--transport",
         "sse-only"
-      ],
-      "command": "npx"
+      ]
     }
   }
 }
