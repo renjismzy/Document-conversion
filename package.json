@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "MCP server for document format conversion",
   "main": "src/index.js",
+  "bin": {
+    "document-conversion-mcp": "mcp-tools.js"
+  },
   "type": "module",
   "scripts": {
     "start": "node src/index.js",

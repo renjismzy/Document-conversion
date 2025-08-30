@@ -5,10 +5,7 @@
       "args": [
         "--yes",
         "--package=https://github.com/renjismzy/Document-conversion.git",
-        "--",
-        "npm",
-        "run",
-        "tools"
+        "document-conversion-mcp"
       ],
       "env": {
         "NODE_ENV": "production"
