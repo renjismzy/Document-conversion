@@ -50,6 +50,35 @@
 git clone https://github.com/renjismzy/Document-conversion.git
 ```
 
+### 云端部署配置
+
+本项目支持直接从GitHub仓库进行云端部署，无需本地安装。使用以下MCP配置：
+
+```json
+{
+  "mcpServers": {
+    "document-conversion": {
+      "command": "npx",
+      "args": [
+        "--yes",
+        "--package=https://github.com/renjismzy/Document-conversion.git",
+        "node",
+        "mcp-tools.js"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  }
+}
+```
+
+#### 云端部署优势
+- **无需本地安装**：直接从GitHub仓库运行
+- **自动更新**：每次运行获取最新版本
+- **跨平台兼容**：支持任何有Node.js环境的系统
+- **简化部署**：一个配置文件即可部署
+
 ### 魔搭平台部署
 
 本项目已配置支持魔搭平台部署，包含以下配置文件：
