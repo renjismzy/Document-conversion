@@ -1,9 +1,16 @@
 {
   "mcpServers": {
     "document-conversion": {
-      "command": "node",
-      "args": ["./mcp-tools.js"],
-      "cwd": "E:\\Document-conversion"
+      "command": "npx",
+      "args": [
+        "--yes",
+        "--package=https://github.com/renjismzy/Document-conversion.git",
+        "node",
+        "mcp-tools.js"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      }
     }
   }
 }
