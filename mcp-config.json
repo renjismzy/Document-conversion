@@ -2,7 +2,7 @@
   "mcpServers": {
     "document-conversion": {
       "command": "node",
-      "args": ["./mcp-tools.js"],
+      "args": ["e:\\Document-conversion\\mcp-tools.js"],
       "env": {
         "NODE_ENV": "production"
       },
