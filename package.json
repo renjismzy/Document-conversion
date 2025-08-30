@@ -37,15 +37,15 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^0.5.0",
-    "pdf2pic": "^3.1.1",
-    "pdf-parse": "^1.1.1",
     "mammoth": "^1.6.0",
-    "xlsx": "^0.18.5",
     "marked": "^12.0.0",
-    "turndown": "^7.1.2",
+    "mime-types": "^2.1.35",
+    "pdf-parse": "^1.1.1",
+    "pdf2pic": "^3.1.1",
     "puppeteer": "^21.11.0",
     "sharp": "^0.33.2",
-    "mime-types": "^2.1.35"
+    "turndown": "^7.1.2",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/node": "^20.11.0"

@@ -2,21 +2,8 @@
   "mcpServers": {
     "document-conversion": {
       "command": "node",
-      "args": ["./mcp-tools.js"]
+      "args": ["./mcp-tools.js"],
+      "cwd": "E:\\Document-conversion"
     }
-  },
-  "tools": [
-    "convert_document",
-    "get_document_info", 
-    "list_supported_formats",
-    "batch_convert",
-    "validate_file",
-    "scan_directory",
-    "preview_conversion",
-    "check_tool_status"
-  ],
-  "formats": {
-    "input": ["pdf", "docx", "xlsx", "pptx", "md", "html", "txt", "csv"],
-    "output": ["pdf", "docx", "xlsx", "pptx", "html", "md", "txt", "png", "jpg"]
   }
 }
