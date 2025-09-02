@@ -1,13 +1,11 @@
 import fs from 'fs/promises';
+import fsSync from 'fs';
 import path from 'path';
 import mime from 'mime-types';
 
 // 路径标准化函数 - 支持单斜杠和双反斜杠
 export function normalizePath(filePath) {
   if (!filePath) return filePath;
-  
-  console.log('Debug - Input path:', filePath);
-  console.log('Debug - Current working directory:', process.cwd());
   
   // 先处理路径分隔符统一
   let normalizedPath = filePath;
@@ -23,9 +21,7 @@ export function normalizePath(filePath) {
   }
   
   // 最后标准化路径
-  const result = path.normalize(normalizedPath);
-  console.log('Debug - Normalized path:', result);
-  return result;
+  return path.normalize(normalizedPath);
 }
 
 // 支持的文档格式配置
@@ -155,8 +151,49 @@ export async function validateFile(filePath) {
     // 标准化路径，支持单斜杠和双反斜杠
     const normalizedPath = normalizePath(filePath);
     
+    // 先用同步方法检查文件是否存在
+    console.log('Debug - validateFile called with:', filePath);
+    console.log('Debug - current working directory:', process.cwd());
+    console.log('Debug - normalized path:', normalizedPath);
+    
+    let actualPath = normalizedPath;
+    if (!fsSync.existsSync(normalizedPath)) {
+      // 尝试一些常见的路径变体
+      const alternatives = [
+        filePath, // 原始路径
+        path.resolve('E:\\Document-conversion', path.basename(filePath)), // 绝对路径
+        path.resolve(process.cwd(), filePath), // 相对于当前工作目录
+        path.resolve('E:\\Document-conversion', filePath) // 相对于项目目录
+      ];
+      
+      console.log('Debug - possible paths:', alternatives);
+      
+      let foundPath = null;
+      for (const altPath of alternatives) {
+        console.log('Debug - testing path:', altPath);
+        if (fsSync.existsSync(altPath)) {
+          console.log('Debug - found file at:', altPath);
+          foundPath = altPath;
+          break;
+        } else {
+          console.log('Debug - file not found at:', altPath);
+        }
+      }
+      
+      if (!foundPath) {
+        return {
+          valid: false,
+          error: `文件未找到: ${normalizedPath}\n尝试的路径: ${alternatives.join(', ')}`
+        };
+      }
+      
+      actualPath = foundPath;
+    } else {
+      console.log('Debug - file found at normalized path:', normalizedPath);
+    }
+    
     // 检查文件是否存在
-    const stats = await fs.stat(normalizedPath);
+    const stats = await fs.stat(actualPath);
     
     if (!stats.isFile()) {
       return {
@@ -175,7 +212,7 @@ export async function validateFile(filePath) {
     }
 
     // 检查文件格式
-    const ext = path.extname(normalizedPath).toLowerCase();
+    const ext = path.extname(actualPath).toLowerCase();
     const format = getFileFormat(ext);
     
     if (!format) {
