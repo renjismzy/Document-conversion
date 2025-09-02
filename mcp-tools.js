@@ -155,7 +155,16 @@ class UnifiedMCPToolsServer {
 
   // 统一文档转换处理器
   async handleDocumentConverter(args) {
+    // 参数验证
+    if (!args || typeof args !== 'object') {
+      throw new Error('参数不能为空且必须是对象类型');
+    }
+    
     const { operation } = args;
+    
+    if (!operation) {
+      throw new Error('operation参数是必需的');
+    }
 
     switch (operation) {
       case 'convert':
@@ -249,11 +258,14 @@ class UnifiedMCPToolsServer {
       file_pattern
     );
 
+    // 验证results结构
+    const details = results.details && Array.isArray(results.details) ? results.details : [];
+    
     return {
       content: [
         {
           type: 'text',
-          text: `🔄 批量转换完成！\n✅ 成功: ${results.success}\n❌ 失败: ${results.failed}\n📝 详情:\n${results.details.join('\n')}`,
+          text: `🔄 批量转换完成！\n✅ 成功: ${results.success || 0}\n❌ 失败: ${results.failed || 0}\n📝 详情:\n${details.join('\n')}`,
         },
       ],
     };
@@ -279,6 +291,11 @@ class UnifiedMCPToolsServer {
   // 扫描目录
   async handleScanDirectory(args) {
     const { directory_path, file_extensions = [] } = args;
+    
+    // 验证file_extensions参数
+    if (file_extensions && !Array.isArray(file_extensions)) {
+      throw new Error('file_extensions参数必须是数组类型');
+    }
 
     try {
       const files = await fs.readdir(directory_path, { withFileTypes: true });
