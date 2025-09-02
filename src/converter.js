@@ -9,6 +9,7 @@ import TurndownService from 'turndown';
 import puppeteer from 'puppeteer';
 import sharp from 'sharp';
 import mime from 'mime-types';
+import { Document, Packer, Paragraph, TextRun, HeadingLevel } from 'docx';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -297,57 +298,140 @@ export class DocumentConverter {
       // 读取Markdown文件
       const markdown = await fs.readFile(inputPath, 'utf8');
       
-      // 转换为HTML
-      const html = marked(markdown);
+      // 解析Markdown内容并转换为docx段落
+      const paragraphs = this.parseMarkdownToDocx(markdown);
       
-      // 创建临时HTML文件
-      const tempHtml = outputPath.replace(/\.docx$/, '.temp.html');
-      const fullHtml = `<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Markdown转换结果</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; }
-        h1, h2, h3, h4, h5, h6 { color: #333; margin-top: 1.5em; margin-bottom: 0.5em; }
-        p { margin-bottom: 1em; }
-        code { background-color: #f4f4f4; padding: 2px 4px; border-radius: 3px; font-family: monospace; }
-        pre { background-color: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto; }
-        blockquote { border-left: 4px solid #ddd; margin: 0; padding-left: 1em; color: #666; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-    </style>
-</head>
-<body>
-    ${html}
-</body>
-</html>`;
+      // 创建Word文档
+      const doc = new Document({
+        sections: [{
+          properties: {},
+          children: paragraphs,
+        }],
+      });
       
-      await fs.writeFile(tempHtml, fullHtml, 'utf8');
+      // 生成DOCX文件
+      const buffer = await Packer.toBuffer(doc);
+      await fs.writeFile(outputPath, buffer);
       
-      // 使用puppeteer生成PDF，然后转换为Word格式
-      // 由于直接转换为Word格式比较复杂，我们先生成一个富文本HTML
-      // 然后使用mammoth的反向功能或其他方法
-      
-      // 简化方案：创建一个包含样式的HTML文件，用户可以手动复制到Word中
-       // 或者我们可以生成RTF格式，Word可以直接打开
-       const rtfContent = this.htmlToRtf(html);
-       const rtfPath = outputPath.replace(/\.docx$/, '.rtf').replace(/\//g, path.sep);
-       console.log('生成RTF文件路径:', rtfPath);
-       await fs.writeFile(rtfPath, rtfContent, 'utf8');
-       console.log('RTF文件已生成');
-      
-      // 清理临时文件
-      await fs.unlink(tempHtml);
+      console.log(`DOCX文件已生成: ${outputPath}`);
       
       return { 
-        message: `成功转换Markdown为RTF格式 (${rtfPath})，可以用Word打开并另存为DOCX格式`,
-        outputPath: rtfPath
+        message: `成功转换Markdown为DOCX格式`,
+        outputPath: outputPath
       };
     } catch (error) {
       throw new Error(`Markdown转Word转换失败: ${error.message}`);
     }
+  }
+  
+  // 解析Markdown内容并转换为docx段落
+  parseMarkdownToDocx(markdown) {
+    const lines = markdown.split('\n');
+    const paragraphs = [];
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      
+      if (line === '') {
+        // 空行
+        paragraphs.push(new Paragraph({
+          children: [new TextRun('')],
+        }));
+      } else if (line.startsWith('# ')) {
+        // H1标题
+        paragraphs.push(new Paragraph({
+          heading: HeadingLevel.HEADING_1,
+          children: [new TextRun(line.substring(2))],
+        }));
+      } else if (line.startsWith('## ')) {
+        // H2标题
+        paragraphs.push(new Paragraph({
+          heading: HeadingLevel.HEADING_2,
+          children: [new TextRun(line.substring(3))],
+        }));
+      } else if (line.startsWith('### ')) {
+        // H3标题
+        paragraphs.push(new Paragraph({
+          heading: HeadingLevel.HEADING_3,
+          children: [new TextRun(line.substring(4))],
+        }));
+      } else if (line.startsWith('#### ')) {
+        // H4标题
+        paragraphs.push(new Paragraph({
+          heading: HeadingLevel.HEADING_4,
+          children: [new TextRun(line.substring(5))],
+        }));
+      } else if (line.startsWith('- ') || line.startsWith('* ')) {
+        // 列表项
+        paragraphs.push(new Paragraph({
+          children: [new TextRun(`• ${line.substring(2)}`)],
+        }));
+      } else {
+        // 普通段落，处理粗体和斜体
+        const textRuns = this.parseInlineFormatting(line);
+        paragraphs.push(new Paragraph({
+          children: textRuns,
+        }));
+      }
+    }
+    
+    return paragraphs;
+  }
+  
+  // 解析行内格式（粗体、斜体等）
+  parseInlineFormatting(text) {
+    const textRuns = [];
+    let currentText = '';
+    let i = 0;
+    
+    while (i < text.length) {
+      if (text.substring(i, i + 2) === '**') {
+        // 粗体
+        if (currentText) {
+          textRuns.push(new TextRun(currentText));
+          currentText = '';
+        }
+        i += 2;
+        let boldText = '';
+        while (i < text.length - 1 && text.substring(i, i + 2) !== '**') {
+          boldText += text[i];
+          i++;
+        }
+        if (text.substring(i, i + 2) === '**') {
+          textRuns.push(new TextRun({ text: boldText, bold: true }));
+          i += 2;
+        } else {
+          currentText += '**' + boldText;
+        }
+      } else if (text[i] === '*' && text[i + 1] !== '*') {
+        // 斜体
+        if (currentText) {
+          textRuns.push(new TextRun(currentText));
+          currentText = '';
+        }
+        i++;
+        let italicText = '';
+        while (i < text.length && text[i] !== '*') {
+          italicText += text[i];
+          i++;
+        }
+        if (i < text.length && text[i] === '*') {
+          textRuns.push(new TextRun({ text: italicText, italics: true }));
+          i++;
+        } else {
+          currentText += '*' + italicText;
+        }
+      } else {
+        currentText += text[i];
+        i++;
+      }
+    }
+    
+    if (currentText) {
+      textRuns.push(new TextRun(currentText));
+    }
+    
+    return textRuns.length > 0 ? textRuns : [new TextRun(text)];
   }
   
   // 简单的HTML到RTF转换器

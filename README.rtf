@@ -1,0 +1,354 @@
+{\rtf1\ansi\deff0 {\fonttbl {\f0 Times New Roman;}}\f0\fs24 \fs32\b Document Conversion MCP\b0\fs24\par 
+一个强大的文档格式转换MCP (Model Context Protocol) 工具，支持多种文档格式之间的相互转换。\par 
+\fs28\b 🌟 特性\b0\fs24\par 
+
+\b 多格式支持\b0 : 支持PDF、Word、Excel、PowerPoint、Markdown、HTML、文本等多种格式
+\b 批量转换\b0 : 支持批量处理多个文档
+\b MCP协议\b0 : 完全兼容Model Context Protocol标准
+\b 本地运行\b0 : 在本地安装并运行，加速启动
+\b 跨平台\b0 : 支持任何有Node.js环境的系统
+\b 性能优化\b0 : 浏览器实例复用减少启动开销
+\b 增强错误处理\b0 : 详细日志记录和错误捕获
+\b 内存优化\b0 : 缓存大小限制防止内存泄漏
+
+\fs28\b 📋 支持的格式\b0\fs24\par 
+\fs26\b 输入格式\b0\fs24\par 
+
+\b PDF\b0  (.pdf)
+\b Microsoft Word\b0  (.docx, .doc)
+\b Microsoft Excel\b0  (.xlsx, .xls)
+\b Microsoft PowerPoint\b0  (.pptx, .ppt)
+\b Markdown\b0  (.md, .markdown)
+\b HTML\b0  (.html, .htm)
+\b 纯文本\b0  (.txt)
+\b CSV\b0  (.csv)
+\b JSON\b0  (.json)
+
+\fs26\b 输出格式\b0\fs24\par 
+
+\b PDF\b0  (.pdf)
+\b Microsoft Word\b0  (.docx)
+\b Microsoft Excel\b0  (.xlsx)
+\b Microsoft PowerPoint\b0  (.pptx)
+\b HTML\b0  (.html)
+\b Markdown\b0  (.md)
+\b 纯文本\b0  (.txt)
+\b CSV\b0  (.csv)
+\b JSON\b0  (.json)
+\b 图片\b0  (.png, .jpg)
+
+\fs28\b 🚀 快速开始\b0\fs24\par 
+\fs26\b 系统要求\b0\fs24\par 
+
+Node.js 18.0.0 或更高版本
+npm 包管理器
+支持MCP协议的客户端
+
+\fs26\b 推荐方式：NPX 一键部署 ⭐\b0\fs24\par 
+\b 最简单的使用方式，无需本地安装，自动获取最新版本！\b0 \par 
+在您的MCP客户端配置文件中添加以下配置：\par 
+{
+  &quot;mcpServers&quot;: {
+    &quot;document-conversion&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [
+        &quot;document-conversion-mcp&quot;
+      ],
+      &quot;env&quot;: {
+        &quot;NODE_ENV&quot;: &quot;production&quot;
+      }
+    }
+  }
+}
+
+NPX 部署优势
+
+✅ \b 零配置\b0 : 无需手动下载和安装
+✅ \b 自动更新\b0 : 每次启动自动获取最新版本
+✅ \b 跨平台\b0 : 支持Windows、macOS、Linux
+✅ \b 即开即用\b0 : 一行配置即可使用
+✅ \b 官方维护\b0 : 直接从npm官方源获取
+
+\fs26\b 本地开发部署\b0\fs24\par 
+适合需要自定义修改或离线使用的场景。\par 
+MCP配置文件
+{
+  &quot;mcpServers&quot;: {
+    &quot;document-conversion&quot;: {
+      &quot;command&quot;: &quot;node&quot;,
+      &quot;args&quot;: [
+        &quot;e:\\Document-conversion\\mcp-tools.js&quot;
+      ],
+      &quot;env&quot;: {
+        &quot;NODE_ENV&quot;: &quot;production&quot;
+      }
+    }
+  }
+}
+
+使用步骤
+
+\b 克隆项目\b0 : \f1 git clone https://github.com/renjismzy/Document-conversion.git\f0 
+\b 安装依赖\b0 : \f1 cd Document-conversion && npm install\f0 
+\b 配置MCP\b0 : 将上述配置添加到您的MCP客户端
+\b 启动服务\b0 : MCP客户端会直接启动本地服务
+
+\fs26\b HTTP/SSE 云端部署\b0\fs24\par 
+适合需要高可用性和负载均衡的生产环境。\par 
+使用streamable_http部署
+{
+  &quot;mcpServers&quot;: {
+    &quot;document-conversion&quot;: {
+      &quot;type&quot;: &quot;streamable_http&quot;,
+      &quot;url&quot;: &quot;https://mcp.api-inference.modelscope.net/cd3990ec86b54d/mcp&quot;
+    }
+  }
+}
+
+\fs26\b 部署方式对比\b0\fs24\par 
+
+
+
+特性
+NPX部署 (推荐)
+本地开发
+HTTP/SSE部署
+
+
+
+配置难度
+⭐ 极简
+⭐⭐ 简单
+⭐ 极简
+
+
+启动速度
+⭐⭐⭐ 快
+⭐⭐⭐⭐ 最快
+⭐⭐⭐ 快
+
+
+网络依赖
+首次需要
+无
+需要
+
+
+自动更新
+✅ 自动
+❌ 手动
+✅ 自动
+
+
+自定义修改
+❌ 不支持
+✅ 完全支持
+❌ 不支持
+
+
+维护成本
+⭐ 极低
+⭐⭐⭐ 中等
+⭐ 极低
+
+
+\fs26\b 使用建议\b0\fs24\par 
+
+\b 🎯 日常使用\b0 : 推荐 \b NPX部署\b0 ，零配置，自动更新
+\b 🔧 开发调试\b0 : 推荐 \b 本地开发\b0 ，便于修改和调试
+\b ☁️ 云端环境\b0 : 推荐 \b HTTP/SSE部署\b0 ，享受云端服务稳定性
+\b 📱 快速体验\b0 : 推荐 \b NPX部署\b0 ，一行配置即可使用
+
+\fs28\b 🛠️ 统一转换工具\b0\fs24\par 
+托管部署后，您将获得一个强大的统一文档转换工具 \f1 document_converter\f0 ，支持8种不同的操作：\par 
+\fs26\b 使用方法\b0\fs24\par 
+所有功能都通过 \f1 document_converter\f0  工具实现，通过 \f1 operation\f0  参数指定具体操作：\par 
+1. 文档格式转换 (convert)
+{
+  &quot;tool&quot;: &quot;document_converter&quot;,
+  &quot;arguments&quot;: {
+    &quot;operation&quot;: &quot;convert&quot;,
+    &quot;input_path&quot;: &quot;./documents/report.docx&quot;,
+    &quot;output_path&quot;: &quot;./output/report.pdf&quot;,
+    &quot;target_format&quot;: &quot;pdf&quot;,
+    &quot;options&quot;: {
+      &quot;quality&quot;: 90
+    }
+  }
+}
+
+2. 获取文档信息 (get_info)
+{
+  &quot;tool&quot;: &quot;document_converter&quot;,
+  &quot;arguments&quot;: {
+    &quot;operation&quot;: &quot;get_info&quot;,
+    &quot;file_path&quot;: &quot;./documents/report.docx&quot;
+  }
+}
+
+3. 批量转换 (batch_convert)
+{
+  &quot;tool&quot;: &quot;document_converter&quot;,
+  &quot;arguments&quot;: {
+    &quot;operation&quot;: &quot;batch_convert&quot;,
+    &quot;input_directory&quot;: &quot;./documents&quot;,
+    &quot;output_directory&quot;: &quot;./output&quot;,
+    &quot;target_format&quot;: &quot;pdf&quot;,
+    &quot;file_pattern&quot;: &quot;*.docx&quot;
+  }
+}
+
+4. 列出支持格式 (list_formats)
+{
+  &quot;tool&quot;: &quot;document_converter&quot;,
+  &quot;arguments&quot;: {
+    &quot;operation&quot;: &quot;list_formats&quot;
+  }
+}
+
+5. 文件验证 (validate_file)
+{
+  &quot;tool&quot;: &quot;document_converter&quot;,
+  &quot;arguments&quot;: {
+    &quot;operation&quot;: &quot;validate_file&quot;,
+    &quot;file_path&quot;: &quot;./documents/report.docx&quot;
+  }
+}
+
+6. 目录扫描 (scan_directory)
+{
+  &quot;tool&quot;: &quot;document_converter&quot;,
+  &quot;arguments&quot;: {
+    &quot;operation&quot;: &quot;scan_directory&quot;,
+    &quot;directory_path&quot;: &quot;./documents&quot;,
+    &quot;file_extensions&quot;: [&quot;docx&quot;, &quot;pdf&quot;, &quot;txt&quot;]
+  }
+}
+
+7. 转换预览 (preview_conversion)
+{
+  &quot;tool&quot;: &quot;document_converter&quot;,
+  &quot;arguments&quot;: {
+    &quot;operation&quot;: &quot;preview_conversion&quot;,
+    &quot;input_path&quot;: &quot;./documents/report.docx&quot;,
+    &quot;target_format&quot;: &quot;pdf&quot;
+  }
+}
+
+8. 状态检查 (check_status)
+{
+  &quot;tool&quot;: &quot;document_converter&quot;,
+  &quot;arguments&quot;: {
+    &quot;operation&quot;: &quot;check_status&quot;
+  }
+}
+
+\fs28\b 📖 转换示例\b0\fs24\par 
+\fs26\b PDF 转换\b0\fs24\par 
+
+PDF → 文本: 提取PDF中的文本内容
+PDF → Markdown: 转换为Markdown格式，自动识别标题
+PDF → HTML: 转换为HTML网页格式
+PDF → 图片: 将PDF页面转换为PNG/JPG图片
+
+\fs26\b Word 文档转换\b0\fs24\par 
+
+Word → PDF: 保持格式的PDF转换
+Word → HTML: 转换为网页格式
+Word → Markdown: 提取文本并转换为Markdown
+Word → 文本: 纯文本提取
+
+\fs26\b Excel 转换\b0\fs24\par 
+
+Excel → CSV: 转换工作表为CSV格式
+Excel → JSON: 将数据转换为JSON格式
+Excel → HTML: 生成HTML表格
+
+\fs26\b Markdown 转换\b0\fs24\par 
+
+Markdown → HTML: 渲染为HTML网页
+Markdown → PDF: 生成PDF文档
+Markdown → Word: 转换为Word文档
+
+\fs28\b ⚙️ 配置选项\b0\fs24\par 
+\fs26\b 转换选项\b0\fs24\par 
+
+\b quality\b0 : 图片质量 (0-100)
+\b page_range\b0 : PDF页面范围，如 &quot;1-5&quot; 或 &quot;1,3,5&quot;
+\b extract_images\b0 : 是否提取图片
+\b sheet\b0 : Excel工作表名称
+
+\fs26\b 环境变量\b0\fs24\par 
+
+\b NODE_ENV\b0 : 运行环境 (production/development)
+\b MCP_SERVER_NAME\b0 : MCP服务器名称
+
+\fs28\b 🐛 故障排除\b0\fs24\par 
+\fs26\b 常见问题\b0\fs24\par 
+
+\b npx下载失败\b0 \par 
+
+检查网络连接
+确保npm版本为最新
+尝试清除npm缓存: \f1 npm cache clean --force\f0 
+
+
+\b Node.js版本不兼容\b0 \par 
+
+确保使用Node.js 18.0.0或更高版本
+使用nvm管理Node.js版本
+
+
+\b 权限问题\b0 \par 
+
+在Windows上以管理员身份运行
+在Linux/macOS上使用sudo（如需要）
+
+
+\b PDF转换失败\b0 \par 
+
+确保PDF文件没有密码保护
+检查文件路径是否正确
+
+
+
+\fs26\b 调试模式\b0\fs24\par 
+如需调试，可以设置环境变量：\par 
+DEBUG=* npx --yes --package=https://github.com/renjismzy/Document-conversion.git -- node ./mcp-tools.js
+
+\fs28\b 🔄 版本更新\b0\fs24\par 
+使用托管部署的优势之一是自动更新。每次启动MCP服务器时，npx会自动检查并下载最新版本。\par 
+如果您想强制更新到最新版本：\par 
+npm cache clean --force
+
+\fs26\b 更新日志\b0\fs24\par 
+
+v1.0.0: 初始版本，支持基本转换
+v1.1.0: 添加批量转换和文档信息提取
+v1.2.0: 改进错误处理和添加更多格式支持
+v1.3.0: 添加浏览器实例复用优化
+v1.4.0: 添加增强错误处理、日志记录和内存优化
+
+\fs28\b 📞 支持与贡献\b0\fs24\par 
+\fs26\b 获取帮助\b0\fs24\par 
+
+📋 提交Issue
+📖 查看Wiki
+💬 讨论区
+
+\fs26\b 贡献代码\b0\fs24\par 
+
+Fork 项目
+创建特性分支 (\f1 git checkout -b feature/AmazingFeature\f0 )
+提交更改 (\f1 git commit -m &#39;Add some AmazingFeature&#39;\f0 )
+推送到分支 (\f1 git push origin feature/AmazingFeature\f0 )
+打开Pull Request
+
+\fs28\b 📄 许可证\b0\fs24\par 
+MIT License - 详见 LICENSE 文件\par 
+
+\b Document Conversion MCP\b0  - 让文档转换变得简单高效！ 🚀\par 
+
+💡 \b 提示\b0 : 推荐使用托管部署方式，享受零配置、自动更新的便利体验！\par 
+
+}
