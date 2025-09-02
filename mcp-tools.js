@@ -366,8 +366,8 @@ class UnifiedMCPToolsServer {
     const status = {
       server: 'running',
       version: '1.0.0',
-      supportedInputFormats: formats.input.length,
-      supportedOutputFormats: formats.output.length,
+      supportedInputFormats: formats.inputFormats.length,
+      supportedOutputFormats: formats.outputFormats.length,
       availableTools: 8,
       timestamp: new Date().toISOString(),
     };
