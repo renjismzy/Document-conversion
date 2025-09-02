@@ -1,10 +1,13 @@
 {
   "mcpServers": {
-    "document-conversion-mcp": {
-        "command": "npx",
-        "args": [
-          "mcp-calculator"
-        ]
+    "document-conversion": {
+      "command": "npx",
+      "args": [
+        "document-conversion-mcp"
+      ],
+      "env": {
+        "NODE_ENV": "production"
       }
+    }
   }
 }
