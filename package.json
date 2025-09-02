@@ -18,7 +18,7 @@
     "tools": "node mcp-tools.js",
     "tools-dev": "node --watch mcp-tools.js",
     "test-tools": "node test-unified-tools.js",
-    "launch": "node launch.js",
+    "launch": "npx document-conversion-mcp",
     "deploy-check": "node deploy-check.js"
   },
   "keywords": [
