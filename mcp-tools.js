@@ -363,11 +363,12 @@ class UnifiedMCPToolsServer {
   // 检查工具状态
   async handleCheckToolStatus() {
     const formats = getSupportedFormats();
+    console.log('Debug - formats:', JSON.stringify(formats, null, 2));
     const status = {
       server: 'running',
       version: '1.0.0',
-      supportedInputFormats: formats.inputFormats.length,
-      supportedOutputFormats: formats.outputFormats.length,
+      supportedInputFormats: formats.inputFormats ? formats.inputFormats.length : 0,
+      supportedOutputFormats: formats.outputFormats ? formats.outputFormats.length : 0,
       availableTools: 8,
       timestamp: new Date().toISOString(),
     };
