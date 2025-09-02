@@ -1,0 +1,65 @@
+# 测试文件和目录
+test-files/
+examples/sample-files/
+*.test.js
+test*.js
+
+# 开发和构建文件
+.git/
+.gitignore
+.vscode/
+.idea/
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 临时文件
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# 日志文件
+logs/
+*.log
+
+# 性能测试文件
+performance-test.js
+
+# 部署检查文件
+deploy-check.js
+
+# NPX测试文件
+test-npx.js
+
+# 发布指南
+PUBLISH.md
+
+# 云端部署配置（npm包不需要）
+modelscope.yaml
+Dockerfile
+
+# 示例文件（保留example-usage.js和unified-tools-example.js作为使用示例）
+# examples/
+
+# 开发配置文件
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# 编辑器配置
+*.swp
+*.swo
+*~
+
+# 操作系统文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

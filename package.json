@@ -19,7 +19,9 @@
     "tools-dev": "node --watch mcp-tools.js",
     "test-tools": "node test-unified-tools.js",
     "launch": "npx document-conversion-mcp",
-    "deploy-check": "node deploy-check.js"
+    "deploy-check": "node deploy-check.js",
+    "prepublishOnly": "npm run test && npm run deploy-check",
+    "postinstall": "echo '✅ Document Conversion MCP 安装完成！使用 npx document-conversion-mcp 启动服务'"
   },
   "keywords": [
     "mcp",
@@ -55,5 +57,17 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "files": [
+    "src/",
+    "mcp-tools.js",
+    "mcp-config.json",
+    "mcp-http-sse.json",
+    "examples/",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }

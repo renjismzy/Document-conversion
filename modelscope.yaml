@@ -1,0 +1,49 @@
+# ModelScope 平台配置文件
+# 用于在魔搭平台部署 MCP 服务
+
+name: document-conversion-mcp
+version: 1.0.1
+description: "MCP server for document format conversion"
+
+# 运行时配置
+runtime:
+  python_version: "3.9"
+  node_version: "18.0.0"
+
+# 入口文件
+entry_point: app.py
+
+# 依赖文件
+dependencies:
+  - requirements.txt
+  - package.json
+
+# 环境变量
+environment:
+  NODE_ENV: production
+  PYTHONPATH: .
+
+# 资源配置
+resources:
+  cpu: 1
+  memory: 2Gi
+  disk: 10Gi
+
+# 健康检查
+health_check:
+  path: /health
+  interval: 30s
+  timeout: 10s
+
+# 端口配置
+ports:
+  - 8000
+
+# 标签
+tags:
+  - mcp
+  - document-conversion
+  - pdf
+  - word
+  - excel
+  - markdown
