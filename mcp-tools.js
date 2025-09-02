@@ -14,7 +14,7 @@ import {
   McpError,
 } from '@modelcontextprotocol/sdk/types.js';
 import { DocumentConverter } from './src/converter.js';
-import { validateFile, getSupportedFormats, formatFileSize } from './src/utils.js';
+import { validateFile, getSupportedFormats, formatFileSize, normalizePath } from './src/utils.js';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -196,14 +196,18 @@ class UnifiedMCPToolsServer {
   async handleConvertDocument(args) {
     const { input_path, output_path, target_format, options = {} } = args;
 
-    const validation = await validateFile(input_path);
+    // 标准化输入和输出路径，支持单斜杠
+    const normalizedInputPath = normalizePath(input_path);
+    const normalizedOutputPath = normalizePath(output_path);
+
+    const validation = await validateFile(normalizedInputPath);
     if (!validation.valid) {
       throw new Error(validation.error);
     }
 
     const result = await this.converter.convert(
-      input_path,
-      output_path,
+      normalizedInputPath,
+      normalizedOutputPath,
       target_format,
       options
     );
@@ -212,7 +216,7 @@ class UnifiedMCPToolsServer {
       content: [
         {
           type: 'text',
-          text: `✅ 文档转换成功！\n📁 输入: ${input_path}\n📄 输出: ${output_path}\n🔄 格式: ${target_format}\n${result.message || ''}`,
+          text: `✅ 文档转换成功！\n📁 输入: ${normalizedInputPath}\n📄 输出: ${normalizedOutputPath}\n🔄 格式: ${target_format}\n${result.message || ''}`,
         },
       ],
     };

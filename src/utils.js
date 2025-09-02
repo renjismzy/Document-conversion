@@ -2,6 +2,26 @@ import fs from 'fs/promises';
 import path from 'path';
 import mime from 'mime-types';
 
+// 路径标准化函数 - 支持单斜杠和双反斜杠
+export function normalizePath(filePath) {
+  if (!filePath) return filePath;
+  
+  // 将单斜杠转换为适合当前操作系统的路径分隔符
+  let normalizedPath = filePath.replace(/\//g, path.sep);
+  
+  // 处理Windows路径中的双反斜杠
+  if (process.platform === 'win32') {
+    normalizedPath = normalizedPath.replace(/\\\\/g, '\\');
+  }
+  
+  // 解析为绝对路径
+  if (!path.isAbsolute(normalizedPath)) {
+    normalizedPath = path.resolve(process.cwd(), normalizedPath);
+  }
+  
+  return path.normalize(normalizedPath);
+}
+
 // 支持的文档格式配置
 export const SUPPORTED_FORMATS = {
   input: {
@@ -126,8 +146,11 @@ export const SUPPORTED_FORMATS = {
  */
 export async function validateFile(filePath) {
   try {
+    // 标准化路径，支持单斜杠和双反斜杠
+    const normalizedPath = normalizePath(filePath);
+    
     // 检查文件是否存在
-    const stats = await fs.stat(filePath);
+    const stats = await fs.stat(normalizedPath);
     
     if (!stats.isFile()) {
       return {
@@ -146,7 +169,7 @@ export async function validateFile(filePath) {
     }
 
     // 检查文件格式
-    const ext = path.extname(filePath).toLowerCase();
+    const ext = path.extname(normalizedPath).toLowerCase();
     const format = getFileFormat(ext);
     
     if (!format) {
