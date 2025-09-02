@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "document-conversion-mcp": {
+        "command": "npx",
+        "args": [
+          "mcp-calculator"
+        ]
+      }
+  }
+}
