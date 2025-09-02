@@ -6,6 +6,9 @@ import mime from 'mime-types';
 export function normalizePath(filePath) {
   if (!filePath) return filePath;
   
+  console.log('Debug - Input path:', filePath);
+  console.log('Debug - Current working directory:', process.cwd());
+  
   // 先处理路径分隔符统一
   let normalizedPath = filePath;
   
@@ -20,7 +23,9 @@ export function normalizePath(filePath) {
   }
   
   // 最后标准化路径
-  return path.normalize(normalizedPath);
+  const result = path.normalize(normalizedPath);
+  console.log('Debug - Normalized path:', result);
+  return result;
 }
 
 // 支持的文档格式配置
