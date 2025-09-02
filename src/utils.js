@@ -6,12 +6,12 @@ import mime from 'mime-types';
 export function normalizePath(filePath) {
   if (!filePath) return filePath;
   
-  // 将单斜杠转换为适合当前操作系统的路径分隔符
-  let normalizedPath = filePath.replace(/\//g, path.sep);
+  // 先处理路径分隔符统一
+  let normalizedPath = filePath;
   
-  // 处理Windows路径中的双反斜杠
+  // 在Windows系统上，将正斜杠转换为反斜杠
   if (process.platform === 'win32') {
-    normalizedPath = normalizedPath.replace(/\\\\/g, '\\');
+    normalizedPath = normalizedPath.replace(/\//g, '\\');
   }
   
   // 解析为绝对路径
@@ -19,6 +19,7 @@ export function normalizePath(filePath) {
     normalizedPath = path.resolve(process.cwd(), normalizedPath);
   }
   
+  // 最后标准化路径
   return path.normalize(normalizedPath);
 }
 
